@@ -4,6 +4,8 @@ from fif import *
 
 # Example usage:
 if __name__ == "__main__":
+    # The original grid of interpolation nodes.
+    x_grid = np.linspace(0, 1, 11) 
     i_val = 3
     u_i_obj = u(i_val)
     r_i_obj = r(i_val)

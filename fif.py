@@ -21,9 +21,6 @@ class r:
         u_i_obj = u(self.i)
         return x * (u_i_obj(1) - u_i_obj(0)) + u_i_obj(0)
 
-# The original grid of interpolation nodes.
-x_grid = np.linspace(0, 1, 11)
-
 class L:
     """
     Affine map L_j : [0,1] -> [x_{j-1}, x_j].
