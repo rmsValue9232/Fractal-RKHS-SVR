@@ -28,10 +28,10 @@ class L:
     """
     Affine map L_j : [0,1] -> [x_{j-1}, x_j].
     """
-    def __init__(self, j: int):
+    def __init__(self, j: int, x_left, x_right):
         assert j >= 1, "j must be at least 1."
-        self.x_left = x_grid[j - 1]
-        self.x_right = x_grid[j]
+        self.x_left = x_left
+        self.x_right = x_right
         self.j = j
     
     def __call__(self, x):
@@ -43,32 +43,36 @@ class M:
     Map M_j: [0,1] x R -> R defined by
       M_j(x, z) = s_j*(z - r_i(x)) + u_i(L_j(x)).
     """
-    def __init__(self, j: int, s_j: float, u_i, r_i):
+    def __init__(self, j: int, s_j: float,x_left, x_right, u_i, r_i):
         assert j >= 1, "j must be at least 1."
         assert -1 < s_j < 1, "s_j must be in (-1, 1)."
         self.j = j
+        self.x_left = x_left
+        self.x_right = x_right
         self.s_j = s_j
         self.u_i = u_i
         self.r_i = r_i
-        self.L_j = L(j)
+        self.L_j = L(j, self.x_left, self.x_right)
     
     def __call__(self, x, z):
         return self.s_j * (z - self.r_i(x)) + self.u_i(self.L_j(x))
 
 class W:
     """
-    Mapping W_j: R^2 -> R^2 defined by
+    Mapping W_j: [0, 1] x R -> [x_{j-1}, x_j] x R defined by
       W_j(x, z) = (L_j(x), M_j(x, z)),
     where L_j and M_j are the maps for the j-th subinterval.
     This class is vectorized and accepts an array of points.
     """
-    def __init__(self, j: int, s_j: float, u_i, r_i):
+    def __init__(self, j: int, s_j: float,x_left, x_right, u_i, r_i):
         self.j = j
+        self.x_left = x_left
+        self.x_right = x_right
         self.s_j = s_j
         self.u_i = u_i
         self.r_i = r_i
-        self.L_j = L(j)
-        self.M_j = M(j, s_j, u_i, r_i)
+        self.L_j = L(j, self.x_left, self.x_right)
+        self.M_j = M(j, s_j,self.x_left, self.x_right, u_i, r_i)
     
     def __call__(self, points: np.ndarray):
         """
@@ -106,7 +110,7 @@ def compute_F_ui(u_i, r_i, s_values, x_grid, data_values, num_iter=2):
         # For each subinterval, apply the corresponding W mapping.
         for j in range(1, N + 1):
             s_j = s_values[j - 1]
-            W_j_obj = W(j, s_j, u_i, r_i)
+            W_j_obj = W(j, s_j, x_grid[j-1], x_grid[j], u_i, r_i)
             new_pts = W_j_obj(S_arr)
             new_points_list.append(new_pts)
         # Combine new points with existing ones.
