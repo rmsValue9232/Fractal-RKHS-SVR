@@ -81,7 +81,7 @@ class W:
         new_z = self.M_j(x_vals, z_vals)
         return np.column_stack((new_x, new_z))
 
-def compute_fractal_graph_vectorized(u_i, r_i, s_values, x_grid, data_values, num_iter=6):
+def compute_F_ui(u_i, r_i, s_values, x_grid, data_values, num_iter=2):
     """
     Computes a pointwise approximation to the graph of the fractal interpolation function
     using an iterated function system (IFS) in a vectorized manner.

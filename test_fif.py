@@ -15,7 +15,7 @@ if __name__ == "__main__":
     s_values = [0.1 if i%2!=0 else 0.5 for i in range((len(x_grid) - 1))]
     
     # Compute the fractal graph using the vectorized IFS approach.
-    fractal_points = compute_fractal_graph_vectorized(u_i_obj, r_i_obj, s_values, x_grid, data_values, num_iter=3)
+    fractal_points = compute_F_ui(u_i_obj, r_i_obj, s_values, x_grid, data_values, num_iter=3)
     
     # Plot the resulting fractal interpolation function.
     plt.figure(figsize=(8, 4))
