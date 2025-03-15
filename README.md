@@ -1,4 +1,4 @@
-# Developing Reproducing Kernel Hilbert Space for the task of Support Vector Regression
+# Developing Fractal Type Reproducing Kernel Hilbert Space for the task of Support Vector Regression
 
 > ## Based on the paper
 >
