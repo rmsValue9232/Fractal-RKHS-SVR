@@ -94,8 +94,14 @@ class RKHS:
             print(f"\tBuilt F_[u_{i+1}].")
     
     def inner_product(self, Fi:FIF, Fj:FIF):
-        integrand = lambda x: Fi(x)*Fj(x)
-        return integrate_using.quad(integrand, a=0, b=1)[0]
+        x_points = Fi.fractal_points[:, 0] if len(Fi.fractal_points[:, 0]) < len(Fj.fractal_points[:, 0]) else Fj.fractal_points[:, 0]
+
+        fi_points = Fi(x_points)
+        fj_points = Fj(x_points)
+        return integrate_using.simpson(y=fi_points*fj_points,x=x_points)
+
+        # integrand = lambda x: Fi(x)*Fj(x)
+        # return integrate_using.quad(integrand, a=0, b=1)[0]
 
         # return integrate_using.simpson(Fi.fractal_points[:, 1] * Fj.fractal_points[:, 1], x = Fi.fractal_points[:, 0])
     
@@ -118,3 +124,8 @@ class RKHS:
     
     def kernel_function(self, x:float, x_:float):
         return np.squeeze(self.F(x_).T @ self.B @ self.F(x))[()]
+    
+    def kernel_array(self, x: np.ndarray, x_:np.ndarray):
+        assert(x.shape == x_.shape), "shape of x and x_ must be same."
+        kf = np.vectorize(self.kernel_function)
+        return kf(x, x_)
