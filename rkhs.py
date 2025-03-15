@@ -90,15 +90,21 @@ class RKHS:
         for i in range(self.m):
             self.normal_basis[f"{i+1}"] = fif.u(i)
             print(f"\tBuilt u_{i+1}.")
+
             self.fractal_basis[f"{i+1}"] = self._build_Fi(i)
             print(f"\tBuilt F_[u_{i+1}].")
+            if i == 0:
+                self.refined_x_grid = self.fractal_basis[f"{i+1}"].fractal_points[:, 0]
+            else:
+                if len(self.fractal_basis[f"{i+1}"].fractal_points) < len(self.refined_x_grid):
+                    self.refined_x_grid = self.fractal_basis[f"{i+1}"].fractal_points[:, 0]
+        print(f"Established the refined x grid with {self.refined_x_grid.shape[0]} points.")
+            
     
     def inner_product(self, Fi:FIF, Fj:FIF):
-        x_points = Fi.fractal_points[:, 0] if len(Fi.fractal_points[:, 0]) < len(Fj.fractal_points[:, 0]) else Fj.fractal_points[:, 0]
-
-        fi_points = Fi(x_points)
-        fj_points = Fj(x_points)
-        return integrate_using.simpson(y=fi_points*fj_points,x=x_points)
+        fi_points = Fi(self.refined_x_grid)
+        fj_points = Fj(self.refined_x_grid)
+        return integrate_using.simpson(y=fi_points*fj_points,x=self.refined_x_grid)
 
         # integrand = lambda x: Fi(x)*Fj(x)
         # return integrate_using.quad(integrand, a=0, b=1)[0]
@@ -109,8 +115,7 @@ class RKHS:
         self.A = np.zeros(shape=(self.m, self.m))
         for i in range(self.m):
             for j in range(self.m):
-                self.A[i][j] = self.inner_product(Fi = self.fractal_basis[f"{i+1}"],
-                                             Fj = self.fractal_basis[f"{j+1}"])
+                self.A[i][j] = self.inner_product(Fi = self.fractal_basis[f"{i+1}"], Fj = self.fractal_basis[f"{j+1}"])
     
     def _build_matrixB(self):
         self.B = np.linalg.inv(self.A)
