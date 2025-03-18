@@ -79,18 +79,15 @@ class RKHS:
         print(f"Built matrix B = inverse(A).")
         
     def _build_Fi(self, i):
-        Fi = FIF(i=i, x_grid=self.x_grid, f_values=self.f_grid,
+        Fi = FIF(i=i, x_grid=self.x_grid, f_values=fif.u(i)(self.x_grid),
                s_values=list(self.s_values[i, :]), depth=self.depth)
         return Fi
 
     def _build_basis(self):
         print(f"Building the Basis functions for the RKHS:")
         self.fractal_basis = dict()
-        self.normal_basis = dict()
+        
         for i in range(self.m):
-            self.normal_basis[f"{i+1}"] = fif.u(i)
-            print(f"\tBuilt u_{i+1}.")
-
             self.fractal_basis[f"{i+1}"] = self._build_Fi(i)
             print(f"\tBuilt F_[u_{i+1}].")
             if i == 0:
