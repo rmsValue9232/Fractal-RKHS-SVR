@@ -110,11 +110,10 @@ def compute_F_ui(u_i, r_i, s_values, x_grid, data_values, num_iter=2):
             W_j_obj = W(j, s_j, x_grid[j-1], x_grid[j], u_i, r_i)
             new_pts = W_j_obj(S_arr)
             new_points_list.append(new_pts)
-        # Combine new points with existing ones.
-        all_points = np.vstack([S_arr] + new_points_list)
+        # Form the new points list (refinement of previous list)
+        all_points = np.vstack(new_points_list)
         # Remove duplicates by rounding and using np.unique.
-        rounded = np.round(all_points, decimals=10)
-        S_arr = np.unique(rounded, axis=0)
+        S_arr = np.unique(all_points, axis=0)
     # Sort by the x-coordinate.
     S_arr = S_arr[np.argsort(S_arr[:, 0])]
     return S_arr
