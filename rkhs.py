@@ -104,7 +104,8 @@ class RKHS:
     def inner_product(self, Fi:FIF, Fj:FIF):
         fi_points = Fi(self.refined_x_grid)
         fj_points = Fj(self.refined_x_grid)
-        return integrate_using.simpson(y=fi_points*fj_points,x=self.refined_x_grid)
+        return np.trapz(y = fi_points*fj_points, x = self.refined_x_grid)
+        # return integrate_using.simpson(y=fi_points*fj_points,x=self.refined_x_grid)
 
         # integrand = lambda x: Fi(x)*Fj(x)
         # return integrate_using.quad(integrand, a=0, b=1)[0]
