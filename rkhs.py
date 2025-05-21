@@ -1,7 +1,7 @@
 import numpy as np
 import fif
-import scipy.integrate as integrate_using
-import scipy.interpolate as interpolate_using
+# import scipy.integrate as integrate_using
+# import scipy.interpolate as interpolate_using
 
 class FIF:
     """
@@ -67,16 +67,16 @@ class RKHS:
         np.random.seed(42)
         if s_values is None:
             self.s_values = np.random.uniform(low=-0.999999, high=0.999999, size=(self.m, self.N))
-            print(f"Vertical scaling factors s_values were not provided, so they were initialised randomly.")
+            print("Vertical scaling factors s_values were not provided, so they were initialised randomly.")
         else:
             assert (s_values.shape == (self.m, self.N)), "Sufficient number of scaling factors not provided."
             self.s_values = s_values
         
         self._build_basis()
         self._build_matrixA()
-        print(f"Built matrix A = [<F_[u_i], F_[u_j]>].")
+        print("Built matrix A = [<F_[u_i], F_[u_j]>].")
         self._build_matrixB()
-        print(f"Built matrix B = inverse(A).")
+        print("Built matrix B = inverse(A).")
         
     def _build_Fi(self, i):
         Fi = FIF(i=i, x_grid=self.x_grid, f_values=fif.u(i)(self.x_grid),
@@ -84,7 +84,7 @@ class RKHS:
         return Fi
 
     def _build_basis(self):
-        print(f"Building the Basis functions for the RKHS:")
+        print("Building the Basis functions for the RKHS:")
         self.fractal_basis = dict()
         
         for i in range(self.m):
@@ -129,6 +129,6 @@ class RKHS:
         return np.squeeze(self.F(x_).T @ self.B @ self.F(x))[()]
     
     def kernel_array(self, x: np.ndarray, x_:np.ndarray):
-        assert(x.shape == x_.shape), "shape of x and x_ must be same."
+        # assert(x.shape == x_.shape), "shape of x and x_ must be same."
         kf = np.vectorize(self.kernel_function)
         return kf(x, x_)
